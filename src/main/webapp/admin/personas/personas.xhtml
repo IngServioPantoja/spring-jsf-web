@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+
+	<ui:composition template="/WEB-INF/template/commonLayout.xhtml">
+		<ui:define name="content">
+			<div class="contentLoader" id="idContentLoader"
+				style="display: none;">
+				<p:progressBar widgetVar="pbAjax" ajax="true"
+					value="#{sessionBean.progreso}" labelTemplate="{value}%"
+					styleClass="animated" global="false">
+					<p:ajax event="complete" oncomplete="PF('pbAjax').cancel();" />
+				</p:progressBar>
+			</div>
+			<p:growl id="growl" showDetail="true" globalOnly="true" sticky="true"
+				autoUpdate="true" />
+			<div class="col-md-12">
+				<ol class="breadcrumb bg-default bg-light-rtl">
+					<li><a href="#">LINK</a></li>
+					<li class="active">LINK 2</li>
+				</ol>
+			</div>
+			<div class="col-md-12">
+				<div class="block">
+					<div class="divIniciarBean">#{personaBean}
+						#{personaBean.cargarPersonas()}</div>
+
+					<p:panel id="toggleable" header="Personas registradas"
+						toggleable="true" closable="true" toggleSpeed="500" 
+						closeSpeed="500" widgetVar="panel" style="margin-bottom:20px;">
+
+						<p:outputPanel style="overflow:auto;">
+							<p:commandButton value="Registrar persona"
+								actionListener="#{personaBean.limpiarRegistrar()}"
+								onstart="$('#idContentLoader').show();PF('pbAjax').start();"
+								oncomplete="PF('nuevoDialogo').show();$('#idContentLoader').hide();PF('pbAjax').cancel();"
+								update="@([id$=idFormAgregar])" icon="ui-icon-plus" />
+							<br></br>
+							<br></br>
+							<div class="form-row">
+								<h:form>
+									<p:dataTable var="persona" value="#{personaBean.personas}"
+									id="idTablaPersonas" rows="20" paginator="true"
+									filteredValue="#{personaBean.personasFiltradas}"
+									emptyMessage="No se han encontrado personas"
+									widgetVar="tablaPersonas" scrollable="true" scrollHeight="400px;"
+									paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									rowsPerPageTemplate="20,30,40"
+									style="width:80%;max-width:900px;margin:auto auto;">
+									<f:facet name="header">
+										<p:outputPanel>
+											<h:outputText value="Busqueda global:" />
+											<p:inputText onkeyup="PF('tablaPersonas').filter();"
+												style="width:150px" id="globalFilter"
+												onkeypress="if (event.keyCode == 13) {  return false; }"
+												placeholder="Ingrese un texto" />
+										</p:outputPanel>
+									</f:facet>
+									<p:column filterBy="#{persona.idPersona}" filterMatchMode="contains" headerText="Id"
+											styleClass="columId">
+										<h:outputText value="#{persona.idPersona}" />
+									</p:column>
+
+									<p:column filterBy="#{persona.identificacion}" filterMatchMode="contains" headerText="Identificacion">
+										<h:outputText value="#{persona.identificacion}" />
+									</p:column>
+
+									<p:column filterBy="#{persona.nombre}" filterMatchMode="contains" headerText="Paterno">
+										<h:outputText value="#{persona.nombre}" />
+									</p:column>
+
+									<p:column filterBy="#{persona.apeMaterno}" filterMatchMode="contains" headerText="Materno">
+										<h:outputText value="#{persona.apeMaterno}" />
+									</p:column>
+									<p:column headerText="Opciones" width="150px;">
+										<a class="widget-icon widget-icon-large customButonContainer"><span
+											class="icon-edit"></span> <p:commandButton
+												oncomplete="PF('modificarDialogo').show();"
+												action="#{personaBean.definirActual(persona)}"
+												update="@([id$=idFormModificar])"
+												styleClass="customButon"></p:commandButton> </a>
+										<a class="widget-icon widget-icon-large customButonContainer"><span
+											class="icon-remove"></span> <p:commandButton
+												oncomplete="PF('eliminarDialogo').show();"
+												action="#{personaBean.definirActual(persona)}"
+												update="@([id$=idFormEliminar)"
+												styleClass="customButon"></p:commandButton> </a>
+									</p:column>
+								</p:dataTable>
+								</h:form>
+								<br></br>
+							</div>
+						</p:outputPanel>
+					</p:panel>
+				</div>
+			</div>
+			<p:dialog header="Registrar Persona" widgetVar="nuevoDialogo"
+				showEffect="explode" hideEffect="explode" resizable="false"
+				modal="true" closeOnEscape="true" width="650px">
+				<h:form id="idFormAgregar">
+					<div class="ui-grid ui-grid-responsive">
+						<div class="ui-grid-row inputMargin">
+							<div class="col-xs-3"><p:outputLabel value="Identificación"/></div>
+							<div class="col-xs-3">
+								<p:inputText value="#{personaBean.persona.identificacion}" maxlength="20" 
+									styleClass="soloNumero form-control" style="padding-right:30px;" placeholder="Identificación" id="idIdentificacionInput" >
+									<p:ajax listener="#{personaBean.validarIdentificacion}" process="@this" update="msgIdentificacion" 
+									onstart="$('#cargador').fadeIn();" event="blur" oncomplete="$('#cargador').fadeOut();"/>
+								</p:inputText>
+								<div id="cargador" style="position: absolute;top: 4px;right: 12px;background: #ddd; display:none;">
+								<h:graphicImage library="img" name="loader.gif" />
+								</div>	
+							</div>
+							<div class="col-xs-3"><p:outputLabel value="Nombre"/></div>
+							<div class="col-xs-3">
+								<p:inputText value="#{personaBean.persona.nombre}" />
+							</div>
+						</div>
+						<div class="ui-grid-row inputMargin">
+							<div class="col-xs-6">
+								<h:message for="idIdentificacionInput" id="msgIdentificacion"  style="display:block;text-align:center;"/>
+							</div>
+							<div class="col-xs-3"></div>
+							<div class="col-xs-3"></div>
+						</div>
+						<div class="ui-grid-row inputMargin">
+							<div class="col-xs-3"><p:outputLabel value="Appelido Paterno"/></div>
+							<div class="col-xs-3">
+								<p:inputText value="#{personaBean.persona.apePaterno}" />
+							</div>
+							<div class="col-xs-3"><p:outputLabel value="Apellido Materno"/></div>
+							<div class="col-xs-3">
+								<p:inputText value="#{personaBean.persona.apeMaterno}" />
+							</div>
+						</div>
+						<div class="ui-grid-row inputMargin">
+							<div class="col-xs-3"><p:outputLabel value="Telefono"/></div>
+							<div class="col-xs-3">
+								<p:inputText value="#{personaBean.persona.telefono}" />
+							</div>
+							<div class="col-xs-2">
+								<p:outputLabel value="E-Mail"/>
+							</div>
+							<div class="col-xs-4">
+								<p:inputText value="#{personaBean.persona.email}" />
+							</div>
+						</div>
+						<div class="ui-grid-row inputMargin">
+							<div class="col-xs-3"><p:outputLabel value="Genero"/></div>
+							<div class="col-xs-3">
+								<p:selectOneMenu style="width:100%">
+						            <f:selectItems value="#{personaBean.lstGeneros}" var="genero" itemLabel="#{genero.descripcion}" itemValue="#{genero.id}"/>
+						        </p:selectOneMenu>
+						        
+							</div>
+							<div class="col-xs-2">
+							</div>
+							<div class="col-xs-4">
+							</div>
+						</div>
+					</div>
+					<br></br>
+					<p:commandButton value="Guardar" update="@([id$=idTablaRoles])"
+						onstart="$('#idContentLoader').show();PF('pbAjax').start();"
+						actionListener="#{personaBean.registrar()}" validateClient="true"
+						oncomplete="PF('nuevoDialogo').hide();$('#idContentLoader').hide();PF('pbAjax').cancel();"
+						styleClass="ui-priority-primary btn btn-default btn-clean" />
+					<br></br>
+					<br></br>
+				</h:form>
+			</p:dialog>
+			<p:dialog header="Modificar Persona" widgetVar="modificarDialogo"
+				showEffect="explode" hideEffect="explode" resizable="false"
+				modal="true" closeOnEscape="true" width="500px">
+				<h:form id="idFormModificar">
+					<div class="ui-grid ui-grid-responsive">
+						<div class="ui-grid-row inputMargin">
+							<div class="col-xs-4">Nombre</div>
+							<div class="col-xs-8">
+								<p:inputText value="#{personaBean.persona.nombre}" />
+							</div>
+						</div>
+						<div class="ui-grid-row inputMargin">
+							<div class="col-xs-12">Descripción</div>
+						</div>
+						<div class="ui-grid-row inputMargin">
+							<div class="col-xs-12">
+								<p:inputTextarea value="#{personaBean.persona.nombre}" />
+							</div>
+						</div>
+					</div>
+					<br></br>
+					<p:commandButton value="Confirmar" update="@([id$=idTablaRoles])"
+						onstart="$('#idContentLoader').show();PF('pbAjax').start();"
+						actionListener="#{personaBean.modificar()}"
+						oncomplete="PF('modificarDialogo').hide();$('#idContentLoader').hide();PF('pbAjax').cancel();"
+						styleClass="ui-priority-primary btn btn-default btn-clean" />
+					<br></br>
+					<br></br>
+				</h:form>
+			</p:dialog>
+			<p:dialog header="Eliminar Persona" widgetVar="eliminarDialogo"
+				showEffect="explode" hideEffect="explode" resizable="false"
+				modal="true" closeOnEscape="true" width="400px">
+				<h:form id="idFormEliminarRol">
+					<div class="ui-grid ui-grid-responsive">
+						<div class="ui-grid-row inputMargin">
+							<div class="col-xs-12">¿Realente desea eliminar a 
+								#{personaBean.persona.nombre}?</div>
+						</div>
+					</div>
+					<br></br>
+					<p:commandButton value="Confirmar" update="@([id$=idTablaRoles])"
+						onstart="$('#idContentLoader').show();PF('pbAjax').start();"
+						actionListener="#{personaBean.eliminar}"
+						oncomplete="PF('eliminarDialogo').hide();$('#idContentLoader').hide();PF('pbAjax').cancel();"
+						styleClass="ui-priority-primary btn btn-default btn-clean pull-left" />
+					<p:commandButton value="Cancelar"
+						oncomplete="PF('eliminarDialogo').hide();"
+						styleClass="ui-priority-primary btn btn-default btn-clean pull-right" />
+				</h:form>
+			</p:dialog>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

@@ -1,0 +1,72 @@
+/* Css para areglar el header de la tablas */
+.ui-datatable.ui-widget .ui-outputpanel.ui-widget {
+	text-align: right;
+}
+/* Css para areglar el filtrado de las tablas superior */
+.ui-datatable.ui-widget .ui-outputpanel.ui-widget .ui-inputfield.ui-inputtext.ui-widget.ui-state-default.ui-corner-all{
+	width: 150px;
+	display: inline-block;
+	margin: 0px 0px 0px 10px;
+}
+/* Areglo de los botones de paginación */
+.ui-datatable.ui-widget .ui-paginator .ui-corner-all {
+	line-height: 20px;
+	padding: 5px 10px;
+	margin: 0px;
+}
+/* Areglo de los iconos de los botones de paginación */
+.ui-datatable.ui-widget .ui-paginator .ui-corner-all .ui-icon {
+	height: 20px;
+}
+/* Areglo de los el selecctor de cantidad de filas de paginación */
+.ui-datatable.ui-widget .ui-paginator .ui-paginator-rpp-options {
+	width: 63px;
+	display: inline-block;
+}
+
+.columId .ui-column-filter {
+	width: 100%!important;
+}
+
+.contentLoader{
+	position: fixed;
+	right: 20px;
+	bottom: 20px;
+	z-index: 10;
+	width: 400px;
+	height: 20px;
+}
+
+.customButonContainer{
+	position: relative!important;
+	cursor: pointer;
+	border:1px solid #555;
+	overflow: hidden!important;
+}
+a.customButonContainer:hover{
+	background: #D4DEE7;
+}
+.customButonContainer .customButon{
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	opacity: 0;
+	padding: 0px;
+}
+
+.divIniciarBean{
+	opacity:0!important;
+	height:0px!important;
+	width:0px!important;
+}
+/* Areglo para filas con margen */
+.inputMargin{
+	margin: 5px 0px;
+}
+
+.page-footer{
+	position: fixed;
+	bottom: 5px;
+}

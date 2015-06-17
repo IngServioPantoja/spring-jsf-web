@@ -9,7 +9,7 @@
 	<tx:annotation-driven />
 	<context:annotation-config />
 	<context:component-scan base-package="co.com.sp.capaservicio" />
-	<context:component-scan base-package="co.com.sp.capadatos" />
+	<context:component-scan base-package="co.com.sp.capapersistencia" />
 	<context:component-scan base-package="co.com.sp.beans.managed" />
 
 </beans>

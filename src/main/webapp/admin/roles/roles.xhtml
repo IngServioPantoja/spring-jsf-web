@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+
+	<ui:composition template="/WEB-INF/template/commonLayout.xhtml">
+		<ui:define name="content">
+			<div class="contentLoader" id="idContentLoader"
+				style="display: none;">
+				<p:progressBar widgetVar="pbAjax" ajax="true"
+					value="#{sessionBean.progreso}" labelTemplate="{value}%"
+					styleClass="animated" global="false">
+					<p:ajax event="complete" oncomplete="PF('pbAjax').cancel();" />
+				</p:progressBar>
+			</div>
+			<p:growl id="growl" showDetail="true" globalOnly="true" sticky="true"
+				autoUpdate="true" />
+			<div class="col-md-12">
+				<ol class="breadcrumb bg-default bg-light-rtl">
+					<li><a href="#">LINK</a></li>
+					<li class="active">LINK 2</li>
+				</ol>
+			</div>
+			<div class="col-md-12">
+				<div class="block">
+					<div class="divIniciarBean">#{rolBean}
+						#{rolBean.cargarRoles()}</div>
+
+					<p:panel id="toggleable" header="Roles de usuario"
+						toggleable="true" closable="true" toggleSpeed="500"
+						closeSpeed="500" widgetVar="panel" style="margin-bottom:20px">
+
+						<p:outputPanel style="overflow:auto;">
+							<p:commandButton value="Registrar Rol"
+								actionListener="#{rolBean.limpiarRegistrar()}"
+								onstart="$('#idContentLoader').show();PF('pbAjax').start();"
+								oncomplete="PF('nuevoDialogo').show();$('#idContentLoader').hide();PF('pbAjax').cancel();"
+								update="@([id$=idFormRol])" icon="ui-icon-plus" />
+							<br></br>
+							<br></br>
+							<div class="form-row">
+								<h:form>
+									<p:dataTable var="rol" value="#{rolBean.roles}"
+										id="idTablaRoles" rows="20" paginator="true"
+										emptyMessage="No se han encontrado roles"
+										filteredValue="#{rolBean.rolesFiltrados}"
+										widgetVar="tablaRoles"
+										paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+										rowsPerPageTemplate="20,30,40"
+										style="width:80%;max-width:900px;height:80%;max-height:800px;margin:auto auto;">
+										<f:facet name="header">
+											<p:outputPanel>
+												<h:outputText value="Busqueda global:" />
+												<p:inputText onkeyup="PF('tablaRoles').filter();"
+													style="width:150px" id="globalFilter"
+													onkeypress="if (event.keyCode == 13) {  return false; }"
+													placeholder="Ingrese un texto" />
+											</p:outputPanel>
+										</f:facet>
+										<p:column headerText="Id" width="80px;"
+											filterBy="#{rol.idRol}" filterMatchMode="contains"
+											styleClass="columId">
+											<h:outputText value="#{rol.idRol}" />
+										</p:column>
+
+										<p:column headerText="Nombre" filterBy="#{rol.nombre}"
+											filterMatchMode="contains">
+											<h:outputText value="#{rol.nombre}" />
+										</p:column>
+
+										<p:column headerText="Descripción"
+											filterBy="#{rol.descripcion}" filterMatchMode="contains">
+											<h:outputText value="#{rol.descripcion}" />
+										</p:column>
+										
+										<p:column headerText="Opciones" width="150px;">
+											<a class="widget-icon widget-icon-large customButonContainer"><span
+												class="icon-edit"></span> <p:commandButton
+													oncomplete="PF('modificarDialogo').show();"
+													action="#{rolBean.definirActual(rol)}"
+													update="@([id$=idFormModificarRol])"
+													styleClass="customButon"></p:commandButton> </a>
+											<a class="widget-icon widget-icon-large customButonContainer"><span
+												class="icon-remove"></span> <p:commandButton
+													oncomplete="PF('eliminarDialogo').show();"
+													action="#{rolBean.definirActual(rol)}"
+													update="@([id$=idFormEliminarRol])"
+													styleClass="customButon"></p:commandButton> </a>
+										</p:column>
+									</p:dataTable>
+								</h:form>
+								<br></br>
+								<br></br>
+							</div>
+						</p:outputPanel>
+					</p:panel>
+				</div>
+			</div>
+			<p:dialog header="Registrar Rol" widgetVar="nuevoDialogo"
+				showEffect="explode" hideEffect="explode" resizable="false"
+				modal="true" closeOnEscape="true" width="500px">
+				<h:form id="idFormRol">
+					<div class="ui-grid ui-grid-responsive">
+						<div class="ui-grid-row inputMargin">
+							<div class="ui-grid-col-4">Nombre</div>
+							<div class="ui-grid-col-8">
+								<p:inputText value="#{rolBean.rolNuevo.nombre}" />
+							</div>
+						</div>
+						<div class="ui-grid-row inputMargin">
+							<div class="ui-grid-col-12">Descripción</div>
+						</div>
+						<div class="ui-grid-row inputMargin">
+							<div class="ui-grid-col-12">
+								<p:inputTextarea value="#{rolBean.rolNuevo.descripcion}" />
+							</div>
+						</div>
+					</div>
+					<br></br>
+					<p:commandButton value="Guardar" update="@([id$=idTablaRoles])"
+						onstart="$('#idContentLoader').show();PF('pbAjax').start();"
+						actionListener="#{rolBean.registrarRol()}"
+						oncomplete="PF('nuevoDialogo').hide();$('#idContentLoader').hide();PF('pbAjax').cancel();"
+						styleClass="ui-priority-primary btn btn-default btn-clean" />
+					<br></br>
+					<br></br>
+				</h:form>
+			</p:dialog>
+			<p:dialog header="Modificar Rol" widgetVar="modificarDialogo"
+				showEffect="explode" hideEffect="explode" resizable="false"
+				modal="true" closeOnEscape="true" width="500px">
+				<h:form id="idFormModificarRol">
+					<div class="ui-grid ui-grid-responsive">
+						<div class="ui-grid-row inputMargin">
+							<div class="ui-grid-col-4">Nombre</div>
+							<div class="ui-grid-col-8">
+								<p:inputText value="#{rolBean.rolSeleccionado.nombre}" />
+							</div>
+						</div>
+						<div class="ui-grid-row inputMargin">
+							<div class="ui-grid-col-12">Descripción</div>
+						</div>
+						<div class="ui-grid-row inputMargin">
+							<div class="ui-grid-col-12">
+								<p:inputTextarea value="#{rolBean.rolSeleccionado.descripcion}" />
+							</div>
+						</div>
+					</div>
+					<br></br>
+					<p:commandButton value="Confirmar" update="@([id$=idTablaRoles])"
+						onstart="$('#idContentLoader').show();PF('pbAjax').start();"
+						actionListener="#{rolBean.modificarRol()}"
+						oncomplete="PF('modificarDialogo').hide();$('#idContentLoader').hide();PF('pbAjax').cancel();"
+						styleClass="ui-priority-primary btn btn-default btn-clean" />
+					<br></br>
+					<br></br>
+				</h:form>
+			</p:dialog>
+			<p:dialog header="Eliminar Rol" widgetVar="eliminarDialogo"
+				showEffect="explode" hideEffect="explode" resizable="false"
+				modal="true" closeOnEscape="true" width="400px">
+				<h:form id="idFormEliminarRol">
+					<div class="ui-grid ui-grid-responsive">
+						<div class="ui-grid-row inputMargin">
+							<div class="ui-grid-col-12">¿Realente desea eliminar el rol
+								#{rolBean.rolSeleccionado.nombre}?</div>
+						</div>
+					</div>
+					<br></br>
+					<p:commandButton value="Confirmar" update="@([id$=idTablaRoles])"
+						onstart="$('#idContentLoader').show();PF('pbAjax').start();"
+						actionListener="#{rolBean.eliminarRol}"
+						oncomplete="PF('eliminarDialogo').hide();$('#idContentLoader').hide();PF('pbAjax').cancel();"
+						styleClass="ui-priority-primary btn btn-default btn-clean pull-left" />
+					<p:commandButton value="Cancelar"
+						oncomplete="PF('eliminarDialogo').hide();"
+						styleClass="ui-priority-primary btn btn-default btn-clean pull-right" />
+				</h:form>
+			</p:dialog>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

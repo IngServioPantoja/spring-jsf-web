@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head></h:head>
+<h:body>
+
+	<ui:composition template="/WEB-INF/template/commonLayout.xhtml">
+		
+		<ui:define name="account">
+		</ui:define>
+		
+		<ui:define name="content">
+			<p:growl showDetail="true" globalOnly="true" sticky="true" autoUpdate="true"/> 
+			<p:outputPanel rendered="#{p:userPrincipal() != null}">
+				Bienvenido:
+				<h:outputText value="#{p:userPrincipal()}" />
+			</p:outputPanel>
+			<p:outputPanel rendered="#{p:userPrincipal() == null}">
+				<h:form>
+					<div class="container">
+						<div class="login-block">
+							<div class="block block-transparent loginContainer">
+								<div class="head">
+									<div class="user">
+										<div class="info">
+											<h:graphicImage library="img/custom/" style="height: 140px;" name="candado.png" />
+											<div class="user-change-button">
+												<span class="icon-off"></span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="content controls npt">
+									<div class="form-row">
+										<div class="col-md-12">
+											<div class="input-group">
+												<div class="input-group-addon">
+													<span class="icon-user"></span>
+												</div>
+												<h:inputText id="usernameInput" autocomplete="off" 
+													styleClass="form-control" value="#{loginBean.username}"
+													required="true" requiredMessage="Ingrese un nombre de usuario">
+													<f:validateLength minimum="1" />
+													<p:ajax update="msgUsername" event="keyup" />
+												</h:inputText>
+												<h:message for="usernameInput" id="msgUsername"  style="display:block;text-align:center;"/>
+											</div>
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="col-md-12">
+											<div class="input-group">
+												<div class="input-group-addon">
+													<span class="icon-key"></span>
+												</div>
+												<h:inputSecret id="passwordInput"
+													value="#{loginBean.password}" required="true" requiredMessage="Ingrese una contraseña">
+													<f:validateLength minimum="1" />
+													<p:ajax update="msgPassword" event="keyup" />
+												</h:inputSecret>
+												<h:message for="passwordInput" id="msgPassword" style="display:block;text-align:center;"/>
+											</div>
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="col-md-12">
+											<p:commandButton styleClass="btn btn-default btn-block" update="@([id$=msgUsername],[id$=msgPassword],[id$=menuHeader])" value="Ingresar" action="#{loginBean.login}" validateClient="true" />
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="col-md-12">
+											<a href="#" class="btn btn-link btn-block">¿Olvidaste tu contraseña?</a>
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="col-md-12 tac">
+											<strong>Tambien puedes loguearte con:</strong>
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="col-md-12">
+											<a href="#" class="btn btn-info btn-block"><span
+												class="icon-facebook"></span> &nbsp; Facebook</a>
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="col-md-12">
+											<a href="#" class="btn btn-primary btn-block"><span
+												class="icon-twitter"></span> &nbsp; Tweeter</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+				</h:form>
+			</p:outputPanel>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

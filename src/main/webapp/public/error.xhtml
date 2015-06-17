@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head></h:head>
+<h:body>
+	<p>
+		Login to access secure pages: Bienvenido:
+		<h:outputText value="#{p:userPrincipal()}" />
+	</p>
+	<p:outputPanel rendered="#{p:userPrincipal() == null}">
+		<h:form>
+			<h:outputLabel for="usernameInput">
+	        Usuario:
+	    </h:outputLabel>
+			<h:inputText id="usernameInput" value="#{sessionBean.username}"
+				required="true" />
+			<br />
+			<h:outputLabel for="passwordInput">
+	        contraseña:
+	    </h:outputLabel>
+			<h:inputSecret id="passwordInput" value="#{sessionBean.password}"
+				required="true" />
+			<br />
+			<h:commandButton value="loguear" action="#{sessionBean.login}" />
+		</h:form>
+	</p:outputPanel>
+</h:body>
+</html>

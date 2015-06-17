@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+
+	<ui:composition template="/WEB-INF/template/commonLayout.xhtml">
+		<ui:define name="content">
+			<div class="contentLoader" id="idContentLoader"
+				style="display: none;">
+				<p:progressBar widgetVar="pbAjax" ajax="true"
+					value="#{rolBean.progreso}" labelTemplate="{value}%"
+					styleClass="animated" global="false">
+					<p:ajax event="complete" oncomplete="PF('pbAjax').cancel();" />
+				</p:progressBar>
+			</div>
+			<p:growl id="growl" showDetail="true" globalOnly="true" sticky="true"
+				autoUpdate="true" />
+			<div class="col-md-12">
+				<ol class="breadcrumb bg-default bg-light-rtl">
+					<li><a href="#">LINK</a></li>
+					<li class="active">LINK 2</li>
+				</ol>
+			</div>
+			<div class="col-md-12">
+				<div class="block">
+					<div class="divIniciarBean">#{moduloBean} #{moduloBean.cargarArbol()}</div>
+
+					<p:panel id="toggleable" header="Roles de usuario"
+						toggleable="true" closable="true" toggleSpeed="500"
+						closeSpeed="500" widgetVar="panel" style="margin-bottom:20px">
+						<p:outputPanel style="overflow:auto;">
+							<div class="form-row">
+								<h:form id="form">
+									<p:contextMenu for="docs">
+										<p:menuitem value="View" 
+											icon="ui-icon-search"/>
+										<p:menuitem value="Delete"
+											update="docs" icon="ui-icon-close" />
+									</p:contextMenu>
+
+									<p:treeTable id="docs" value="#{moduloBean.root}"
+										var="modulo" selectionMode="single"
+										selection="#{moduloBean.nodoSeleccionado}">
+										<f:facet name="header">
+								            Modulos y opciones
+								        </f:facet>
+										<p:column headerText="#{msgs['form.nombre']}">
+											#{modulo.nombre}
+										</p:column>
+										<p:column headerText="Tipo">
+											#{modulo.nombre}
+										</p:column>
+										<p:column headerText="Título">
+											#{modulo.nombre}
+										</p:column>
+										<p:column headerText="Url">
+											#{modulo.nombre}
+										</p:column>
+									</p:treeTable>
+
+									<p:dialog id="dialog" header="Document Detail"
+										showEffect="fade" widgetVar="documentDialog" modal="true"
+										resizable="false">
+										<p:outputPanel id="documentPanel">
+											as
+										</p:outputPanel>
+									</p:dialog>
+								</h:form>
+							</div>
+						</p:outputPanel>
+					</p:panel>
+				</div>
+			</div>
+
+
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>

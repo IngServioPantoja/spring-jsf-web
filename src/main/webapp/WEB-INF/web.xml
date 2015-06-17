@@ -2,7 +2,7 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
   <display-name>spring-jsf-web</display-name>
   <welcome-file-list>
-    <welcome-file>index.xhtml</welcome-file>
+    <welcome-file>public/login.xhtml</welcome-file>
   </welcome-file-list>
   <context-param>
     <param-name>contextConfigLocation</param-name>
@@ -18,7 +18,25 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>Faces Servlet</servlet-name>
-    <url-pattern>/faces/*</url-pattern>
     <url-pattern>*.xhtml</url-pattern>
   </servlet-mapping>
+  <login-config>
+    <auth-method>FORM</auth-method>
+    <realm-name>securityRealm</realm-name>
+    <form-login-config>
+      <form-login-page>/public/login.xhtml</form-login-page>
+      <form-error-page>/public/error.xhtml</form-error-page>
+    </form-login-config>
+  </login-config>
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>Aplicacion WEB JSF</web-resource-name>
+      <url-pattern>/admin/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>ROLE_ADMIN</role-name>
+      <role-name>ROLE_USER</role-name>
+      <role-name>ROLE_GUEST</role-name>
+    </auth-constraint>
+  </security-constraint>
 </web-app>

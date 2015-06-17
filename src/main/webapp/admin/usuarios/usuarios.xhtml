@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:body>
+
+	<ui:composition template="/WEB-INF/template/commonLayout.xhtml">
+		<ui:define name="content">
+			<div class="col-md-12">
+				<ol class="breadcrumb">
+					<li><a href="#">LINK</a></li>
+					<li class="active">LINK 2</li>
+				</ol>
+			</div>
+			<div class="col-md-12">
+				<div class="block">
+					<div class="header">
+						<h2>Usuarios</h2>
+					</div>
+					#{usuarioBean}
+					#{usuarioBean.cargarUsuarios()}
+					<div class="content controls">
+						<div class="form-row">
+							<h:form>
+								<p:dataTable var="usuario" value="#{usuarioBean.usuarios}"
+									id="idTablaPersonas" rows="20" paginator="true"
+									filteredValue="#{usuarioBean.usuariosFiltradas}"
+									paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									rowsPerPageTemplate="20,30,40"
+									style="width:80%;max-width:900px;height:80%;max-height:800px;margin:auto auto;">
+									<f:facet name="header">
+										<p:outputPanel>
+											<h:outputText value="Search all fields:" />
+											<p:inputText id="globalFilter"
+												onkeyup="PF('carsTable').filter()" style="width:150px"
+												placeholder="Enter keyword" />
+										</p:outputPanel>
+									</f:facet>
+									<p:column headerText="Id">
+										<h:outputText value="#{usuario.username}" />
+									</p:column>
+
+									<p:column headerText="Paterno">
+										<h:outputText value="#{usuario.password}" />
+									</p:column>
+								</p:dataTable>
+							</h:form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>
