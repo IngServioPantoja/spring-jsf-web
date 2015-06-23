@@ -1,7 +1,6 @@
 package co.com.sp.beans.managed;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -17,6 +16,7 @@ import co.com.sp.capadominio.ParametroPersona;
 import co.com.sp.capadominio.Persona;
 import co.com.sp.capaservicio.ParametroPersonaService;
 import co.com.sp.capaservicio.PersonaService;
+import co.com.sp.capaservicio.excepciones.BusinessException;
 
 
 @ManagedBean
@@ -54,7 +54,7 @@ private static final long serialVersionUID = -3211394890842682243L;
 	public void cargarPersonas(){
 		try {
 			personas = personaService.listar();
-		} catch (SQLException e) {
+		} catch (BusinessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -66,7 +66,7 @@ private static final long serialVersionUID = -3211394890842682243L;
 		if(lstGeneros==null){
 			try {
 				lstGeneros = parametroPersonaService.findByTipo(idTipoPrametroGeneto);
-			} catch (SQLException e) {
+			} catch (BusinessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -78,7 +78,7 @@ private static final long serialVersionUID = -3211394890842682243L;
 		sessionBean.setProgreso(0);
 		try {
 			personaService.insertar(persona);
-		} catch (SQLException e) {
+		} catch (BusinessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -91,7 +91,7 @@ private static final long serialVersionUID = -3211394890842682243L;
 		sessionBean.setProgreso(0);
 		try {
 			personaService.actualizar(persona);
-		} catch (SQLException e) {
+		} catch (BusinessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -112,43 +112,43 @@ private static final long serialVersionUID = -3211394890842682243L;
 		sessionBean.setProgreso(0);
 		try {
 			personaService.eliminar(persona);
-			sessionBean.setProgreso(50);
-			Long id = persona.getIdPersona();
-			for (Persona personaEliminar : personas) {
-				if(personaEliminar.getIdPersona().equals(id)){
-					personas.remove(personaEliminar);
-					break;
-				}
-			}
-			sessionBean.setProgreso(70);
-            String msg = persona.getNombre()+" ha sido eliminado exitosamente";
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Guardar", msg));
-			persona = new Persona();
-		} catch (SQLException e) {
-			String msg = "Ha ocurrido un error al eliminar la persona";
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", msg));
+		} catch (BusinessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		sessionBean.setProgreso(50);
+		Long id = persona.getIdPersona();
+		for (Persona personaEliminar : personas) {
+			if(personaEliminar.getIdPersona().equals(id)){
+				personas.remove(personaEliminar);
+				break;
+			}
+		}
+		sessionBean.setProgreso(70);
+		String msg = persona.getNombre()+" ha sido eliminado exitosamente";
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Guardar", msg));
+		persona = new Persona();
 		sessionBean.setProgreso(100);
 	}
 	
 	public void validarIdentificacion(){System.out.println("validarIdentificacion");
+		boolean existe = false;
 		try {
-			boolean existe = personaService.encontrarCedula(persona.getIdentificacion());
-			if(existe){
-				System.out.println("ya usada");
-				FacesMessage message = new FacesMessage();
-		        message.setSummary("Cedula ya registrada");
-		        FacesContext.getCurrentInstance().addMessage("idFormAgregar:idIdentificacionInput", message);
-			}else{
-				System.out.println("ya usada");
-				FacesMessage message = new FacesMessage();
-		        message.setSummary("Cedula disponible");
-		        FacesContext.getCurrentInstance().addMessage("idFormAgregar:idIdentificacionInput", message);
-			}
-			
-		} catch (SQLException e) {
+			existe = personaService.encontrarCedula(persona.getIdentificacion());
+		} catch (BusinessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		if(existe){
+			System.out.println("ya usada");
+			FacesMessage message = new FacesMessage();
+		    message.setSummary("Cedula ya registrada");
+		    FacesContext.getCurrentInstance().addMessage("idFormAgregar:idIdentificacionInput", message);
+		}else{
+			System.out.println("ya usada");
+			FacesMessage message = new FacesMessage();
+		    message.setSummary("Cedula disponible");
+		    FacesContext.getCurrentInstance().addMessage("idFormAgregar:idIdentificacionInput", message);
 		}
 	}
 	

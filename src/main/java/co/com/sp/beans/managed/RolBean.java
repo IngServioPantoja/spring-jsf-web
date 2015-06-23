@@ -1,7 +1,6 @@
 package co.com.sp.beans.managed;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import co.com.sp.capadominio.Rol;
 import co.com.sp.capaservicio.RolService;
+import co.com.sp.capaservicio.excepciones.BusinessException;
 
 
 @ManagedBean
@@ -47,7 +47,7 @@ public class RolBean implements Serializable{
 	public void cargarRoles(){
 		try {
 			roles = rolService.listar();
-		} catch (SQLException e) {
+		} catch (BusinessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -64,12 +64,13 @@ public class RolBean implements Serializable{
 		sessionBean.setProgreso(0);
 		try {
 			rolService.insertar(rolNuevo);
-			roles.add(rolNuevo);
-		sessionBean.setProgreso(50);
-		} catch (SQLException e) {
+		} catch (BusinessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		roles.add(rolNuevo);
+		sessionBean.setProgreso(50);
+
 		sessionBean.setProgreso(100);
 	}
 	
@@ -94,7 +95,7 @@ public class RolBean implements Serializable{
 			String msg = "EL rol ha sido eliminado exitosamente";
 			 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Guardar", msg));
 			 sessionBean.setProgreso(100);
-		} catch (SQLException e) {
+		} catch (BusinessException e) {
 			String msg = "Ha ocurrido un error al eliminar el rol";
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", msg));
 		}
@@ -112,7 +113,7 @@ public class RolBean implements Serializable{
 				}
 			}
 			
-		} catch (SQLException e) {
+		} catch (BusinessException e) {
 			String msg = "Ha ocurrido un error al modificar el rol";
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", msg));
 		}

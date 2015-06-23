@@ -1,7 +1,6 @@
 package co.com.sp.beans.managed;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import co.com.sp.capadominio.Grupo;
 import co.com.sp.capaservicio.GrupoService;
+import co.com.sp.capaservicio.excepciones.BusinessException;
 
 @ManagedBean
 @ViewScoped
@@ -39,7 +39,7 @@ public class GrupoBean implements Serializable{
 	public void cargarGrupos(){
 		try {
 			grupos = grupoService.listar();
-		} catch (SQLException e) {
+		} catch (BusinessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -49,7 +49,7 @@ public class GrupoBean implements Serializable{
 		Grupo grupo = (Grupo) event.getObject();
 		try {
 			grupoService.actualizar(grupo);
-		} catch (SQLException e) {
+		} catch (BusinessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

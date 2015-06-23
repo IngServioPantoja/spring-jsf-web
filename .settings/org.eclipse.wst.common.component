@@ -4,11 +4,8 @@
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
-        <dependent-module deploy-path="/" handle="module:/overlay/prj/hibernate-spring-core?includes=**/**&amp;excludes=META-INF/MANIFEST.MF">
-            <dependency-type>consumes</dependency-type>
-        </dependent-module>
-        <dependent-module deploy-path="/" handle="module:/overlay/slf/?includes=**/**&amp;excludes=META-INF/MANIFEST.MF">
-            <dependency-type>consumes</dependency-type>
+        <dependent-module archiveName="core-hibernate-spring-1.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/core-hibernate-spring/core-hibernate-spring">
+            <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="context-root" value="spring-jsf-web"/>
         <property name="java-output-path" value="/spring-jsf-web/target/classes"/>
